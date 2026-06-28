@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-palette="heritage">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>التقويم السنوي للمدارس الحكومية - سلطنة عُمان 2026/2027</title>
+<style>
+/* ===== FONTS ===== */
+@font-face {
+  font-family: 'Adobe Arabic';
+  src: local('AdobeArabic-Regular'), local('Adobe Arabic'), local('AdobeArabic');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adobe Arabic';
+  src: local('AdobeArabic-Bold'), local('Adobe Arabic Bold'), local('AdobeArabic-Bold');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ===== CSS VARIABLES (Tailwind-like) ===== */
+:root {
+  --bg-page: #faf7f1;
+  --bg-card: #ffffff;
+  --border: #e5e7eb;
+  --muted: #f3f4f6;
+  --muted-fg: #6B7280;
+  --heading-color: #3e5680;
+  --accent-heritage: #C8A24B;
+  --accent-blue: #2563EB;
+  --accent-green: #16A34A;
+  --accent-indigo: #7C3AED;
+  --primary-color: #5a6b3e;
+  --badge-bg: #8b1a1a;
+  --footer-color: #a13b3b;
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Adobe Arabic', 'Noto Sans Arabic', system-ui, sans-serif;
+  background-color: var(--bg-page);
+  color: #1f2937;
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] {
+  --bg-page: #0f1117;
+  --bg-card: #1a1c25;
+  --border: #2d3041;
+  --muted: rgba(255,255,255,0.04);
+  --muted-fg: #64748b;
+  --heading-color: #8ba4cc;
+  --primary-color: #8ba87a;
+  --footer-color: #c47a7a;
+}
+[data-theme="dark"] .card { background: var(--bg-card) !important; border-color: var(--border) !important; }
+[data-theme="dark"] .day-grid-wrap { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .day-empty { background: var(--bg-card) !important; }
+[data-theme="dark"] header { background: rgba(26,28,37,0.6) !important; border-bottom-color: var(--border) !important; }
+[data-theme="dark"] .timer-unit { background: var(--bg-card) !important; border-color: var(--border) !important; }
+[data-theme="dark"] .month-header-colored { color: #e2e8f0 !important; }
+[data-theme="dark"] .modal-content { background: #1a1c25 !important; color: #e2e8f0 !important; }
+[data-theme="dark"] .modal-close { background: rgba(255,255,255,0.1) !important; color: #e2e8f0 !important; }
+[data-theme="dark"] .icon-btn { background: var(--bg-card); border-color: var(--border); color: #e2e8f0; }
+
+/* ===== HEADER — matches: border-b border-border bg-card/60 backdrop-blur, inner: max-w-7xl mx-auto px-4 py-6 ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.header-right { text-align: right; }
+.header-right h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--heading-color);
+  line-height: 1.3;
+}
+@media (min-width: 768px) {
+  .header-right h1 { font-size: 1.5rem; }
+}
+.header-right .subtitle {
+  font-size: 0.8125rem;
+  color: var(--muted-fg);
+  margin-top: 2px;
+}
+.header-right .year {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--heading-color);
+  margin-top: 0;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ===== BADGE — matches: text-xs px-3 py-1 rounded-full inline-block font-semibold ===== */
+.ministry-badge {
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  background-color: var(--badge-bg);
+  color: #fff;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* ===== PALETTE PICKER ===== */
+.palette-picker { display: flex; gap: 6px; align-items: center; }
+.palette-dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.palette-dot:hover { transform: scale(1.15); }
+.palette-dot.active { border-color: #1f2937; transform: scale(1.15); }
+[data-theme="dark"] .palette-dot.active { border-color: #e2e8f0; }
+
+/* ===== ICON BUTTON ===== */
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff; color: #374151;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.icon-btn:hover { background: #f3f4f6; }
+
+/* ===== MAIN — matches: max-w-7xl mx-auto px-4 py-8 space-y-8 ===== */
+.main-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+.main-content > section,
+.main-content > .calendar-section {
+  margin-bottom: 32px;
+}
+.main-content > section:last-child,
+.main-content > .calendar-section:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== COUNTDOWN — compact best practice ===== */
+.countdown-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 768px) {
+  .countdown-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* matches: rounded-xl p-3.5 shadow-sm border border-border relative overflow-hidden */
+.countdown-card {
+  border-radius: 0.75rem;
+  padding: 14px 16px;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-card);
+  background-image: linear-gradient(135deg, rgba(200,162,75,0.12), rgba(200,162,75,0.03));
+}
+[data-palette="blue"] .countdown-card { background-image: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(37,99,235,0.05)); }
+[data-palette="green"] .countdown-card { background-image: linear-gradient(135deg, rgba(22,163,74,0.15), rgba(22,163,74,0.05)); }
+[data-palette="indigo"] .countdown-card { background-image: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(124,58,237,0.05)); }
+
+/* matches: absolute top-0 right-0 w-0.5 h-full */
+.countdown-strip {
+  position: absolute; top: 0; right: 0;
+  width: 3px; height: 100%;
+  background: var(--accent-heritage);
+}
+[data-palette="blue"] .countdown-strip { background: var(--accent-blue); }
+[data-palette="green"] .countdown-strip { background: var(--accent-green); }
+[data-palette="indigo"] .countdown-strip { background: var(--accent-indigo); }
+
+.cd-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.cd-title { font-weight: 700; font-size: 0.875rem; color: var(--accent-heritage); }
+[data-palette="blue"] .cd-title { color: var(--accent-blue); }
+[data-palette="green"] .cd-title { color: var(--accent-green); }
+[data-palette="indigo"] .cd-title { color: var(--accent-indigo); }
+.cd-date { font-size: 0.6875rem; color: var(--muted-fg); }
+
+/* timer: compact inline style */
+.timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
+.timer-unit {
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 6px 0;
+  text-align: center;
+}
+
+.timer-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-heritage);
+  line-height: 1.2;
+}
+[data-palette="blue"] .timer-value { color: var(--accent-blue); }
+[data-palette="green"] .timer-value { color: var(--accent-green); }
+[data-palette="indigo"] .timer-value { color: var(--accent-indigo); }
+@media (min-width: 768px) { .timer-value { font-size: 1.5rem; } }
+
+.timer-label { font-size: 10px; color: var(--muted-fg); margin-top: 1px; }
+
+/* ===== STATS — compact ===== */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+@media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.stat-card {
+  border-radius: 0.625rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 12px;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+  text-align: right;
+}
+.stat-label { font-size: 0.6875rem; color: var(--muted-fg); }
+.stat-value { font-size: 1.125rem; font-weight: 700; margin-top: 2px; color: var(--heading-color); }
+.stat-period { font-size: 0.6875rem; color: var(--muted-fg); margin-top: 2px; }
+
+/* ===== LEGEND — compact pills layout ===== */
+.legend-wrap {
+  border-radius: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+}
+
+.legend-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 8px; flex-wrap: wrap; }
+.legend-title { font-weight: 700; color: var(--primary-color); font-size: 0.8125rem; }
+.legend-clear {
+  font-size: 0.6875rem; color: var(--muted-fg);
+  cursor: pointer; background: none; border: none;
+  padding: 3px 8px; border-radius: 6px;
+  transition: background 0.2s;
+}
+.legend-clear:hover { background: rgba(0,0,0,0.04); }
+
+/* 4-column compact grid */
+.legend-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+@media (min-width: 640px) { .legend-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .legend-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.legend-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 8px; border-radius: 6px;
+  border: 1px solid transparent;
+  text-align: right; cursor: pointer;
+  transition: all 0.15s;
+  background: none; font-family: inherit;
+  font-size: 0.75rem; color: inherit;
+  width: 100%;
+}
+.legend-item:hover { border-color: var(--border); background: rgba(0,0,0,0.04); }
+.legend-item.active { border-color: var(--border); background: rgba(0,0,0,0.06); }
+
+.legend-dot {
+  width: 18px; height: 18px;
+  border-radius: 4px; flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* ===== CALENDAR ===== */
+.calendar-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px) { .calendar-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .calendar-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* matches: rounded-xl overflow-hidden border border-border bg-card shadow-sm */
+.month-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+}
+
+.month-header {
+  padding: 6px 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.day-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-fg);
+  background: rgba(0,0,0,0.04);
+}
+.day-labels span { padding: 3px 0; text-align: center; }
+
+/* matches: grid grid-cols-7 gap-[2px] p-[2px] bg-border/40 */
+.day-grid-wrap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 2px;
+  background: rgba(0,0,0,0.06);
+}
+
+/* matches: aspect-square bg-card */
+.day-empty { aspect-ratio: 1; background: var(--bg-card); }
+
+.day-btn {
+  position: relative;
+  aspect-ratio: 1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  padding: 0;
+  outline: none;
+  border-radius: 2px;
+}
+.day-btn:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+}
+.day-btn.dimmed { opacity: 0.15 !important; pointer-events: none; }
+.day-btn.highlighted {
+  outline: 2px solid var(--heading-color);
+  outline-offset: -1px;
+  z-index: 5;
+}
+
+/* ===== FOOTER ===== */
+.footer-text {
+  font-size: 0.6875rem;
+  text-align: center;
+  color: var(--footer-color);
+  line-height: 1.6;
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+  animation: modalIn 0.2s ease-out;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-close {
+  position: absolute; top: 12px; left: 12px;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: none; background: rgba(0,0,0,0.06); color: #374151;
+  font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(0,0,0,0.12); }
+.modal-day-num { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 8px; }
+.modal-row {
+  display: flex; justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.875rem;
+}
+.modal-row:last-child { border-bottom: none; }
+.modal-row-label { color: var(--muted-fg); }
+.modal-row-value { font-weight: 600; }
+.modal-type-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ===== SCROLL TO TOP ===== */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--heading-color);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 50;
+}
+.scroll-top-btn.visible { display: flex; }
+.scroll-top-btn:hover { transform: scale(1.1); }
+
+/* ===== MONTH HEADER COLORS (heritage) ===== */
+[data-palette="heritage"] .mh-0 { background: #b3c79a; color: #2a3a1f; }
+[data-palette="heritage"] .mh-1 { background: #b07ea3; color: #3a1a2a; }
+[data-palette="heritage"] .mh-2 { background: #7ea3b0; color: #1a2a3a; }
+[data-palette="heritage"] .mh-3 { background: #c4a97d; color: #3a2a1a; }
+[data-palette="heritage"] .mh-4 { background: #8fb3a0; color: #1a3a2a; }
+[data-palette="heritage"] .mh-5 { background: #a0a0c4; color: #2a1a3a; }
+[data-palette="blue"] .mh-0 { background: #bfdbfe; color: #1e3a5f; }
+[data-palette="blue"] .mh-1 { background: #93c5fd; color: #1e3a5f; }
+[data-palette="blue"] .mh-2 { background: #60a5fa; color: #fff; }
+[data-palette="blue"] .mh-3 { background: #bfdbfe; color: #1e3a5f; }
+[data-palette="blue"] .mh-4 { background: #93c5fd; color: #1e3a5f; }
+[data-palette="blue"] .mh-5 { background: #60a5fa; color: #fff; }
+[data-palette="green"] .mh-0 { background: #bbf7d0; color: #14532d; }
+[data-palette="green"] .mh-1 { background: #86efac; color: #14532d; }
+[data-palette="green"] .mh-2 { background: #4ade80; color: #14532d; }
+[data-palette="green"] .mh-3 { background: #bbf7d0; color: #14532d; }
+[data-palette="green"] .mh-4 { background: #86efac; color: #14532d; }
+[data-palette="green"] .mh-5 { background: #4ade80; color: #14532d; }
+[data-palette="indigo"] .mh-0 { background: #c7d2fe; color: #312e81; }
+[data-palette="indigo"] .mh-1 { background: #a5b4fc; color: #312e81; }
+[data-palette="indigo"] .mh-2 { background: #818cf8; color: #fff; }
+[data-palette="indigo"] .mh-3 { background: #c7d2fe; color: #312e81; }
+[data-palette="indigo"] .mh-4 { background: #a5b4fc; color: #312e81; }
+[data-palette="indigo"] .mh-5 { background: #818cf8; color: #fff; }
+
+/* ===== PRINT ===== */
+@media print {
+  header { position: static; backdrop-filter: none; }
+  .palette-picker, .icon-btn, .modal-overlay, .scroll-top-btn { display: none !important; }
+  body { background: #fff !important; }
+  .month-card { break-inside: avoid; }
+  .calendar-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-right">
+      <h1>ملخص التقويم السنوي</h1>
+      <p class="subtitle">للمدارس الحكومية والخاصة المطبقة لنظام التقويم الحكومي</p>
+      <p class="year">للعام الدراسي 2026 / 2027م</p>
+    </div>
+    <div class="header-left">
+      <span class="ministry-badge">وزارة التعليم — سلطنة عُمان</span>
+      <div class="palette-picker" id="palettePicker">
+        <button class="palette-dot active" data-palette="heritage" style="background:#C8A24B;" title="تراثي" aria-label="تراثي"></button>
+        <button class="palette-dot" data-palette="blue" style="background:#2563EB;" title="أزرق" aria-label="أزرق"></button>
+        <button class="palette-dot" data-palette="green" style="background:#16A34A;" title="أخضر" aria-label="أخضر"></button>
+        <button class="palette-dot" data-palette="indigo" style="background:#7C3AED;" title="نيلي" aria-label="نيلي"></button>
+      </div>
+      <button class="icon-btn" id="darkToggle" title="الوضع الليلي" aria-label="تبديل الوضع الليلي">🌙</button>
+      <button class="icon-btn" id="printBtn" title="طباعة" aria-label="طباعة" onclick="window.print()">🖨</button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main-content">
+
+  <!-- COUNTDOWN -->
+  <section class="countdown-grid">
+    <div class="countdown-card card">
+      <div class="countdown-strip"></div>
+      <div class="cd-header">
+        <h3 class="cd-title">بداية دوام المعلمين</h3>
+        <span class="cd-date">الأحد 23 أغسطس 2026م</span>
+      </div>
+      <div class="timer-grid" dir="ltr">
+        <div class="timer-unit"><div class="timer-value" id="cd1-days">---</div><div class="timer-label">يوم</div></div>
+        <div class="timer-unit"><div class="timer-value" id="cd1-hours">--</div><div class="timer-label">ساعة</div></div>
+        <div class="timer-unit"><div class="timer-value" id="cd1-mins">--</div><div class="timer-label">دقيقة</div></div>
+        <div class="timer-unit"><div class="timer-value" id="cd1-secs">--</div><div class="timer-label">ثانية</div></div>
+      </div>
+    </div>
+    <div class="countdown-card card">
+      <div class="countdown-strip"></div>
+      <div class="cd-header">
+        <h3 class="cd-title">بداية دوام الطلبة</h3>
+        <span class="cd-date">الأحد 30 أغسطس 2026م</span>
+      </div>
+      <div class="timer-grid" dir="ltr">
+        <div class="timer-unit"><div class="timer-value" id="cd2-days">---</div><div class="timer-label">يوم</div></div>
+        <div class="timer-unit"><div class="timer-value" id="cd2-hours">--</div><div class="timer-label">ساعة</div></div>
+        <div class="timer-unit"><div class="timer-value" id="cd2-mins">--</div><div class="timer-label">دقيقة</div></div>
+        <div class="timer-unit"><div class="timer-value" id="cd2-secs">--</div><div class="timer-label">ثانية</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats-grid">
+    <div class="stat-card card">
+      <div class="stat-label">الفصل الدراسي الأول</div>
+      <div class="stat-value">16 أسبوعاً</div>
+      <div class="stat-period">2026/8/30 ← 2027/1/21</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-label">الفصل الدراسي الثاني</div>
+      <div class="stat-value">17 أسبوعاً</div>
+      <div class="stat-period">2027/1/31 ← 2027/7/8</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-label">إجمالي أيام الدراسة</div>
+      <div class="stat-value">192 يوماً</div>
+      <div class="stat-period">تقريبي</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-label">أيام الامتحانات</div>
+      <div class="stat-value">19 يوماً</div>
+      <div class="stat-period">فصلان دراسيان</div>
+    </div>
+  </section>
+
+  <!-- LEGEND -->
+  <section class="legend-wrap card">
+    <div class="legend-title-row">
+      <h2 class="legend-title">مفتاح التقويم — اضغط للتصفية</h2>
+    </div>
+    <div class="legend-grid" id="legendGrid"></div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="calendar-section">
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-text">ملاحظة: مواعيد أيام الإجازات الرسمية تقريبية وتُحدد نهائياً حسب القرارات الرسمية التي تصدر بهذا الشأن.</p>
+  </footer>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="العودة للأعلى">↑</button>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="dayModal">
+  <div class="modal-content">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ===== DAY COLORS & LABELS =====
+const DAY_COLORS = {
+  study:        { bg: '#C9E7E0', color: null },
+  staff:        { bg: '#b07ea3', color: '#fff' },
+  isra:         { bg: '#b58a8a', color: null },
+  'summer-end': { bg: '#f5c842', color: null },
+  national:     { bg: '#c0392b', color: '#fff' },
+  'eid-fitr':   { bg: '#c9c5d6', color: null },
+  'eid-adha':   { bg: '#b8742a', color: '#fff' },
+  mawlid:       { bg: '#e7d3b1', color: null },
+  weekend:      { bg: '#d9d9d9', color: null },
+  hijri:        { bg: '#6b4423', color: '#fff' },
+  exam:         { bg: '#8cc78a', color: null },
+  promote:      { bg: '#7fb069', color: null }
+};
+
+const DAY_LABELS = {
+  study:        'أيام الدراسة الفعلية',
+  staff:        'دوام أعضاء الهيئة التعليمية',
+  isra:         'الإسراء والمعراج',
+  'summer-end': 'إجازة منتصف العام ونهايته',
+  national:     'اليوم الوطني لسلطنة عُمان',
+  'eid-fitr':   'عيد الفطر المبارك',
+  'eid-adha':   'عيد الأضحى المبارك',
+  mawlid:       'المولد النبوي الشريف',
+  weekend:      'إجازة نهاية الأسبوع',
+  hijri:        'رأس السنة الهجرية',
+  exam:         'أيام الامتحانات وأعمال التصحيح',
+  promote:      'استمرار دوام طلبة الصفوف (1-4)'
+};
+
+const AR_DAYS = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const AR_MONTHS = [
+  'أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر',
+  'يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو'
+];
+const MONTH_HEADER_CLASSES = ['mh-0','mh-1','mh-2','mh-3','mh-4','mh-5'];
+const DAY_LABEL_SHORT = ['الأ','الإ','الث','الأر','الخ','الج','الس'];
+
+// ===== CALENDAR DATA =====
+function getDayType(y, m, d) {
+  const jsDow = new Date(y, m, d).getDay();
+  const isWeekend = (jsDow === 5 || jsDow === 6);
+
+  if (y === 2026 && m === 7) {
+    if ([23,24,26,27].includes(d)) return 'staff';
+    if (d === 25) return 'mawlid';
+    if ([30,31].includes(d)) return 'study';
+    if (isWeekend) return 'weekend';
+    return 'summer-end';
+  }
+  if (y === 2026 && m === 8) { return isWeekend ? 'weekend' : 'study'; }
+  if (y === 2026 && m === 9) { return isWeekend ? 'weekend' : 'study'; }
+  if (y === 2026 && m === 10) {
+    if ([18,19].includes(d)) return 'national';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  if (y === 2026 && m === 11) { return isWeekend ? 'weekend' : 'study'; }
+  if (y === 2027 && m === 0) {
+    if ([10,11].includes(d)) return 'national';
+    if ([12,13,14,17,18,19,20,21].includes(d)) return 'exam';
+    if ([24,25,26,27,28].includes(d)) return 'summer-end';
+    if (d === 31) return 'study';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  if (y === 2027 && m === 1) {
+    if (d === 24) return 'isra';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  if (y === 2027 && m === 2) {
+    if ([19,20,21,22].includes(d)) return 'eid-fitr';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  if (y === 2027 && m === 3) { return isWeekend ? 'weekend' : 'study'; }
+  if (y === 2027 && m === 4) {
+    if ([26,27,28,29].includes(d)) return 'eid-adha';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  if (y === 2027 && m === 5) {
+    if (d === 17) return 'hijri';
+    if ([27,28,29,30].includes(d)) return 'promote';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  if (y === 2027 && m === 6) {
+    if ([1,2].includes(d)) return 'promote';
+    if ([4,5,6,7,8].includes(d)) return 'exam';
+    if (d >= 11) return 'summer-end';
+    return isWeekend ? 'weekend' : 'study';
+  }
+  return null;
+}
+
+function getSemester(y, m) {
+  if (y === 2026 && m >= 7) return 'الفصل الدراسي الأول';
+  if (y === 2027 && m <= 0) return 'الفصل الدراسي الأول';
+  return 'الفصل الدراسي الثاني';
+}
+
+function getSpecialDetails(y, m, d, type) {
+  if (type === 'national' && ((y === 2026 && m === 10 && d === 18) || (y === 2027 && m === 0 && d === 10)))
+    return 'يوم تولي السلطان مقاليد الحكم';
+  if (type === 'national' && ((y === 2026 && m === 10 && d === 19) || (y === 2027 && m === 0 && d === 11)))
+    return 'الذكرى الوطنية المجيدة — إجازة رسمية';
+  if (type === 'staff') return 'حضور الهيئة التدريسية والتجهيز المدرسي';
+  if (type === 'mawlid') return 'المولد النبوي الشريف — إجازة رسمية';
+  if (type === 'isra') return 'إسراء النبي ﷺ ومعراجه — إجازة رسمية';
+  if (type === 'eid-fitr') return 'عطلة عيد الفطر المبارك — إجازة رسمية';
+  if (type === 'eid-adha') return 'عطلة عيد الأضحى المبارك — إجازة رسمية';
+  if (type === 'hijri') return 'رأس السنة الهجرية — إجازة رسمية';
+  if (type === 'exam') return 'فترة الامتحانات النهائية';
+  if (type === 'promote') return 'استمرار دوام طلبة الصفوف (1-4)';
+  if (type === 'summer-end') return 'إجازة منتصف العام الدراسي / نهاية العطلة الصيفية';
+  return null;
+}
+
+// ===== LEGEND =====
+let activeFilter = null;
+
+function renderLegend() {
+  const grid = document.getElementById('legendGrid');
+  const order = ['study','staff','exam','promote','national','eid-fitr','eid-adha','isra','mawlid','hijri','weekend','summer-end'];
+  grid.innerHTML = order.map(type => {
+    const c = DAY_COLORS[type];
+    return '<button class="legend-item' + (activeFilter === type ? ' active' : '') + '" data-type="' + type + '">'
+      + '<span class="legend-dot" style="background:' + c.bg + ';' + (c.color ? 'color:' + c.color + ';' : '') + '"></span>'
+      + '<span style="color:var(--muted-fg)">' + DAY_LABELS[type] + '</span>'
+      + '</button>';
+  }).join('');
+
+  // Re-attach click listeners
+  grid.querySelectorAll('.legend-item').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var t = btn.getAttribute('data-type');
+      activeFilter = (activeFilter === t) ? null : t;
+      renderLegend();
+      applyFilter();
+    });
+  });
+}
+
+function applyFilter() {
+  var allBtns = document.querySelectorAll('.day-btn');
+  for (var i = 0; i < allBtns.length; i++) {
+    var btn = allBtns[i];
+    var t = btn.getAttribute('data-type');
+    if (!activeFilter) {
+      btn.classList.remove('dimmed', 'highlighted');
+      btn.style.pointerEvents = '';
+    } else if (t === activeFilter) {
+      btn.classList.remove('dimmed');
+      btn.classList.add('highlighted');
+      btn.style.pointerEvents = '';
+    } else {
+      btn.classList.add('dimmed');
+      btn.classList.remove('highlighted');
+      btn.style.pointerEvents = 'none';
+    }
+  }
+}
+
+// ===== CALENDAR RENDERING =====
+function renderCalendar() {
+  var grid = document.getElementById('calendarGrid');
+  var months = [];
+  for (var y = 2026; y <= 2027; y++) {
+    var startM = (y === 2026) ? 7 : 0;
+    var endM = (y === 2026) ? 11 : 6;
+    for (var m = startM; m <= endM; m++) {
+      months.push({ y: y, m: m });
+    }
+  }
+
+  var html = '';
+  months.forEach(function(item, idx) {
+    var y = item.y, m = item.m;
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var firstDay = new Date(y, m, 1).getDay();
+    var mhClass = MONTH_HEADER_CLASSES[idx % 6];
+    var monthName = AR_MONTHS[m] + ' ' + y;
+
+    // Day labels
+    var dayLabelsHTML = DAY_LABEL_SHORT.map(function(d) { return '<div class="py-1 text-center">' + d + '</div>'; }).join('');
+
+    // Empty cells
+    var cellsHTML = '';
+    for (var i = 0; i < firstDay; i++) {
+      cellsHTML += '<div class="day-empty"></div>';
+    }
+
+    // Day cells
+    for (var d = 1; d <= daysInMonth; d++) {
+      var type = getDayType(y, m, d);
+      if (!type) {
+        cellsHTML += '<div class="day-empty"></div>';
+        continue;
+      }
+      var c = DAY_COLORS[type];
+      var bgStyle = 'background-color:' + c.bg + ';';
+      var colorStyle = c.color ? 'color:' + c.color + ';' : '';
+      var title = DAY_LABELS[type];
+      cellsHTML += '<button class="day-btn" style="' + bgStyle + colorStyle + '" '
+        + 'title="' + title + '" '
+        + 'data-day="' + d + '" data-month="' + m + '" data-year="' + y + '" data-type="' + type + '">' + d + '</button>';
+    }
+
+    html += '<div class="month-card card">'
+      + '<div class="month-header ' + mhClass + ' month-header-colored">' + monthName + '</div>'
+      + '<div class="day-labels">' + dayLabelsHTML + '</div>'
+      + '<div class="day-grid-wrap">' + cellsHTML + '</div>'
+      + '</div>';
+  });
+
+  grid.innerHTML = html;
+
+  // Attach day click events
+  grid.querySelectorAll('.day-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { openModal(btn); });
+  });
+}
+
+// ===== MODAL =====
+function openModal(btn) {
+  var d = parseInt(btn.getAttribute('data-day'));
+  var m = parseInt(btn.getAttribute('data-month'));
+  var y = parseInt(btn.getAttribute('data-year'));
+  var type = btn.getAttribute('data-type');
+  var dateObj = new Date(y, m, d);
+  var dow = dateObj.getDay();
+  var dayName = AR_DAYS[dow];
+  var dateStr = d + ' ' + AR_MONTHS[m] + ' ' + y;
+  var c = DAY_COLORS[type];
+  var special = getSpecialDetails(y, m, d, type);
+  var semester = getSemester(y, m);
+
+  var html = '<div class="modal-day-num" style="color:' + (c.color || 'var(--heading-color)') + '">' + d + '</div>';
+  html += '<div class="modal-row"><span class="modal-row-label">التاريخ</span><span class="modal-row-value">' + dateStr + '</span></div>';
+  html += '<div class="modal-row"><span class="modal-row-label">اليوم</span><span class="modal-row-value">' + dayName + '</span></div>';
+  html += '<div class="modal-row"><span class="modal-row-label">النوع</span><span class="modal-row-value"><span class="modal-type-badge" style="background:' + c.bg + ';color:' + (c.color || '#333') + '">' + DAY_LABELS[type] + '</span></span></div>';
+  html += '<div class="modal-row"><span class="modal-row-label">الفصل</span><span class="modal-row-value">' + semester + '</span></div>';
+  if (special) {
+    html += '<div class="modal-row"><span class="modal-row-label">تفاصيل</span><span class="modal-row-value">' + special + '</span></div>';
+  }
+
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('dayModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('dayModal').classList.remove('open');
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('dayModal').addEventListener('click', function(e) {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ===== COUNTDOWN =====
+function updateCountdowns() {
+  var now = new Date();
+  var targets = [
+    { date: new Date(2026, 7, 23), prefix: 'cd1' },
+    { date: new Date(2026, 7, 30), prefix: 'cd2' }
+  ];
+  targets.forEach(function(item) {
+    var diff = item.date - now;
+    if (diff < 0) diff = 0;
+    var days = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
+    document.getElementById(item.prefix + '-days').textContent = String(days).padStart(3, '0');
+    document.getElementById(item.prefix + '-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById(item.prefix + '-mins').textContent = String(mins).padStart(2, '0');
+    document.getElementById(item.prefix + '-secs').textContent = String(secs).padStart(2, '0');
+  });
+}
+
+// ===== PALETTE =====
+function setPalette(name) {
+  document.documentElement.setAttribute('data-palette', name);
+  document.querySelectorAll('.palette-dot').forEach(function(d) {
+    d.classList.toggle('active', d.getAttribute('data-palette') === name);
+  });
+  try { localStorage.setItem('cal-palette', name); } catch(e) {}
+}
+
+document.getElementById('palettePicker').addEventListener('click', function(e) {
+  var dot = e.target.closest('.palette-dot');
+  if (dot) setPalette(dot.getAttribute('data-palette'));
+});
+
+// ===== DARK MODE =====
+function setDarkMode(dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('darkToggle').textContent = dark ? '☀️' : '🌙';
+  try { localStorage.setItem('cal-dark', dark ? '1' : '0'); } catch(e) {}
+}
+
+document.getElementById('darkToggle').addEventListener('click', function() {
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  setDarkMode(!isDark);
+});
+
+// ===== SCROLL TO TOP =====
+var scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', function() {
+  if (window.scrollY > 400) {
+    scrollTopBtn.classList.add('visible');
+  } else {
+    scrollTopBtn.classList.remove('visible');
+  }
+});
+scrollTopBtn.addEventListener('click', function() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ===== INIT =====
+(function init() {
+  try {
+    var savedPalette = localStorage.getItem('cal-palette');
+    if (savedPalette) setPalette(savedPalette);
+    var savedDark = localStorage.getItem('cal-dark');
+    if (savedDark === '1') setDarkMode(true);
+  } catch(e) {}
+
+  renderLegend();
+  renderCalendar();
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+})();
+</script>
+</body>
+</html>
